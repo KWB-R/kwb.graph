@@ -1,0 +1,3 @@
+import(kwb.utils)
+useDynLib(kwb.graph, C_getDirectLinks, C_getConnectedLinks)
+exportPattern("^[^\\.]")

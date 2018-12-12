@@ -1,0 +1,8 @@
+Package: kwb.graph
+Maintainer: Hauke Sonnenberg <hauke.sonnenberg@kompetenz-wasser.de>
+Depends: kwb.utils
+Author: Hauke Sonnenberg
+Version: 0.0.99
+License: GPL
+Title: functions finding connected links in directed graphs 
+Description: DEVELOPMENT VERSION!!! functions finding connected links in directed graphs 
