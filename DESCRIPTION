@@ -24,3 +24,4 @@ Imports:
     kwb.utils
 Remotes:
     github::kwb-r/kwb.utils
+RoxygenNote: 7.1.1
