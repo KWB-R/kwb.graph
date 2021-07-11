@@ -1,0 +1,59 @@
+---
+title: "Tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+
+  data("kurasNetwork", package="kwb.graph")  
+  
+  runtime.R <- vector()
+  runtime.C1 <- vector()  
+  runtime.C2 <- vector()  
+  
+  n <- 1
+  
+  resultSize <- 2054851
+  queueSize <- 100*1024
+  
+  for (i in 1:n) {
+    cat("run", i, "/", n, "\n")
+    
+    runtime.R[i] <- system.time(
+      x1 <- kwb.graph::getConnectedLinks(kurasNetwork)
+    )["elapsed"]
+    
+    runtime.C1[i] <- system.time(
+      x2 <- kwb.graph::getConnectedLinks(kurasNetwork, version = 2,
+                                         resultSize = resultSize, queueSize = queueSize)
+    )["elapsed"]
+    
+    runtime.C2[i] <- system.time(
+      x3 <- kwb.graph::getConnectedLinks(kurasNetwork, version = 3,
+                                         resultSize = resultSize, queueSize = queueSize)
+    )["elapsed"]
+  }
+  
+  cat("mean runtime with R-functions:", mean(runtime.R), "\n")
+  cat("mean runtime with C-functions(1):", mean(runtime.C1), "\n")  
+  cat("mean runtime with C-functions(2):", mean(runtime.C2), "\n")  
+  
+  runtimeData <- rbind(
+    data.frame(version=1, runtime=runtime.R),
+    data.frame(version=2, runtime=runtime.C1),
+    data.frame(version=3, runtime=runtime.C2)
+  )
+  
+  boxplot(runtime ~ version, data = runtimeData)
+```
