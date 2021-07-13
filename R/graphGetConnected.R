@@ -14,12 +14,22 @@ if (FALSE)
 
 # getConnectedLinks ------------------------------------------------------------
 getConnectedLinks <- structure(
+#' Get Connected Links
+#'
+#' @param x data frame with each row representing a link of the network. Required
+#' columns: \emph{us_node_id}, \emph{ds_node_id} 
+#' @param upstream if TRUE (upstream), if FALSE (downstream), default: TRUE
+#' @param version   1: R-implementation, 2: C-implementation, (default: 1)
+#' @param dbg default: FALSE
+#' @param ... additional arguments passed to  \code{\link{getConnectedLinks.C}}
+#'
+#' @return get connected links
+#' @export
+#' @useDynLib kwb.graph C_getDirectLinks C_getConnectedLinks
   function # getConnectedLinks
 ### getConnectedLinks
 (
   x,
-  ### data frame with each row representing a link of the network. Required
-  ### columns: \emph{us_node_id}, \emph{ds_node_id}  
   upstream = TRUE,
   version = 1,
   ### 1: R-implementation, 2: C-implementation
@@ -89,8 +99,16 @@ getConnectedLinks <- structure(
 })
 
 # getDirectLinks.R -------------------------------------------------------------
-getDirectLinks.R <- function # getDirectLinks.R
-### getDirectLinks.R
+#' Get Direct Links (R Implementation)
+#'
+#' @param x data frame with each row representing a link of the network. Required
+#' columns: \emph{us_node_id}, \emph{ds_node_id} 
+#' @param upstream if TRUE (upstream), if FALSE (downstream), default: TRUE
+#'
+#' @return get direct links with R implementation
+#' @export
+
+getDirectLinks.R <- function
 (
   x,
   upstream = TRUE
@@ -114,8 +132,18 @@ getDirectLinks.R <- function # getDirectLinks.R
 }
 
 # getDirectLinks.C -------------------------------------------------------------
-getDirectLinks.C <- function # getDirectLinks.C
-### getDirectLinks.C
+#' Get Direct Links (C Implementation)
+#'
+#' @param x data frame with each row representing a link of the network. Required
+#' columns: \emph{us_node_id}, \emph{ds_node_id} 
+#' @param MAX_DIRECT_CONNECTIONS default: 5
+#' @param dbg default: FALSE
+#'
+#' @return get direct links with C implementation
+#' @export
+#'
+
+getDirectLinks.C <- function
 (
   x, MAX_DIRECT_CONNECTIONS = 5, dbg = FALSE
 )
@@ -149,8 +177,15 @@ getDirectLinks.C <- function # getDirectLinks.C
 }
 
 # getConnectedLinks.R ----------------------------------------------------------
-getConnectedLinks.R <- function # getConnectedLinks.R
-### getConnectedLinks.R
+#' Get Connected Links (R Implementation)
+#'
+#' @param directly.connected directly.connected
+#' @param dbg default: FALSE
+#'
+#' @return get connected links with R implementation
+#' @export
+#' @importFrom kwb.utils catIf
+getConnectedLinks.R <- function
 (
   directly.connected, 
   dbg = FALSE
@@ -166,7 +201,7 @@ getConnectedLinks.R <- function # getConnectedLinks.R
   # loop through list of direct links
   for (i in seq_len(n)) {
     
-    catIf(dbg && i %% blocksize == 0, ".")
+    kwb.utils::catIf(dbg && i %% blocksize == 0, ".")
     
     # initialise vector of indices of connected links
     all.connected[[i]] <- integer(0)
@@ -203,12 +238,24 @@ getConnectedLinks.R <- function # getConnectedLinks.R
     all.connected[[i]] <- which(is.connected)
   }
   
-  catIf(dbg, "<\n")
+  kwb.utils::catIf(dbg, "<\n")
   
   all.connected
 }
 
 # getConnectedLinks.C ----------------------------------------------------------
+#' #' Get Connected Links (C Implementation)
+#'
+#' @param directLinks directLinks 
+#' @param resultSize default: 60000
+#' @param queueSize default: 1024*1024
+#' @param version version of C implementation: 1,2 or 3 (default: 1)
+#' @param dbg default: FALSE
+#'
+#' @return get connected links with C implementation
+#' @export
+#'
+
 getConnectedLinks.C <- function # getConnectedLinks.C
 ### getConnectedLinks.C
 (

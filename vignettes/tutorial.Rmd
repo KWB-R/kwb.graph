@@ -1,5 +1,5 @@
 ---
-title: "Tutorial"
+title: "Find Upstream Links in Network"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Tutorial}

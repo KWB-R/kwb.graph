@@ -20,12 +20,16 @@ Description: Functions finding connected links in directed graphs.
 License: MIT + file LICENSE
 URL: https://github.com/KWB-R/kwb.graph
 BugReports: https://github.com/KWB-R/kwb.graph/issues
+Depends:
+    R (>= 2.10)
 Imports:
     kwb.utils
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: 
+    knitr
 Remotes:
     github::kwb-r/kwb.utils
+Encoding: UTF-8
 RoxygenNote: 7.1.1
-Suggests: 
-    rmarkdown,
-    knitr
-VignetteBuilder: knitr

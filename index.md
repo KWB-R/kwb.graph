@@ -1,8 +1,9 @@
 [![R-CMD-check](https://github.com/KWB-R/kwb.graph/workflows/R-CMD-check/badge.svg)](https://github.com/KWB-R/kwb.graph/actions?query=workflow%3AR-CMD-check)
 [![pkgdown](https://github.com/KWB-R/kwb.graph/workflows/pkgdown/badge.svg)](https://github.com/KWB-R/kwb.graph/actions?query=workflow%3Apkgdown)
-[![codecov](https://codecov.io/github/KWB-R/kwb.graph/branch/main/graphs/badge.svg)](https://codecov.io/github/KWB-R/kwb.graph)
+[![codecov](https://codecov.io/github/KWB-R/kwb.graph/branch/master/graphs/badge.svg)](https://codecov.io/github/KWB-R/kwb.graph)
 [![Project Status](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/kwb.graph)]()
+[![R-Universe_Status_Badge](https://kwb-r.r-universe.dev/badges/kwb.graph)](https://kwb-r.r-universe.dev/)
 
 Functions finding connected links in directed graphs.
 
