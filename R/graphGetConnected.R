@@ -104,7 +104,7 @@ getConnectedLinks <- structure(
 #' 
 #' Example data describing a network of connected links
 #' 
-#' @return #' data frame with 10040 observations of two variables. The variables
+#' @return data frame with 10040 observations of two variables. The variables
 #'   \code{us_node_id} (upstream node ID) and \code{ds_node_id} (downstream node
 #'   ID) define the connections between links. They are needed if the list of
 #'   connected links upstream of each node is to be calculated by means of
