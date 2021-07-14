@@ -5,8 +5,8 @@ node_ids <- kwb.utils::createIdAlong(node_names, base_name = "node")
 node_ids <- gsub("^node_", "n", node_ids)
 
 x <- x0
-x$node_us <- node_ids[match(x$upstream, node_names)]
-x$node_ds <- node_ids[match(x$downstream, node_names)]
+x$us_node_id <- node_ids[match(x$upstream, node_names)]
+x$ds_node_id <- node_ids[match(x$downstream, node_names)]
 
 exampleData <- x[, -(1:2)]
 head(exampleData)

@@ -56,8 +56,8 @@ getConnectedLinks <- structure(
   #}
   connectedLinks
 }, ex = function() {
-  data("kurasNetwork", package="kwb.graph")  
-  
+  network <- kwb.graph::exampleNetwork()
+
   runtime.R <- vector()
   runtime.C1 <- vector()  
   runtime.C2 <- vector()  
@@ -71,16 +71,16 @@ getConnectedLinks <- structure(
     cat("run", i, "/", n, "\n")
     
     runtime.R[i] <- system.time(
-      x1 <- getConnectedLinks(kurasNetwork)
+      x1 <- getConnectedLinks(network)
     )["elapsed"]
     
     runtime.C1[i] <- system.time(
-      x2 <- getConnectedLinks(kurasNetwork, version = 2, 
+      x2 <- getConnectedLinks(network, version = 2, 
                               resultSize = resultSize, queueSize = queueSize)
     )["elapsed"]
     
     runtime.C2[i] <- system.time(
-      x3 <- getConnectedLinks(kurasNetwork, version = 3, 
+      x3 <- getConnectedLinks(network, version = 3, 
                               resultSize = resultSize, queueSize = queueSize)
     )["elapsed"]
   }
@@ -98,7 +98,29 @@ getConnectedLinks <- structure(
   boxplot(runtime ~ version, data = runtimeData)
 })
 
+# exampleNetwork ---------------------------------------------------------------
+
+#' Example network
+#' 
+#' Example data describing a network of connected links
+#' 
+#' @return #' data frame with 10040 observations of two variables. The variables
+#'   \code{us_node_id} (upstream node ID) and \code{ds_node_id} (downstream node
+#'   ID) define the connections between links. They are needed if the list of
+#'   connected links upstream of each node is to be calculated by means of
+#'   \code{\link{getConnectedLinks}}.
+#' 
+#' @export
+exampleNetwork <- function()
+{
+  utils::read.csv(
+    system.file("extdata/exampleNetwork.csv", package = "kwb.graph"), 
+    stringsAsFactors = FALSE
+  )
+}
+
 # getDirectLinks.R -------------------------------------------------------------
+
 #' Get Direct Links (R Implementation)
 #'
 #' @param x data frame with each row representing a link of the network. Required

@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 
-  data("kurasNetwork", package="kwb.graph")  
+  network <- kwb.graph::exampleNetwork()
   
   runtime.R <- vector()
   runtime.C1 <- vector()  
@@ -31,16 +31,16 @@ knitr::opts_chunk$set(
     cat("run", i, "/", n, "\n")
     
     runtime.R[i] <- system.time(
-      x1 <- kwb.graph::getConnectedLinks(kurasNetwork)
+      x1 <- kwb.graph::getConnectedLinks(network)
     )["elapsed"]
     
     runtime.C1[i] <- system.time(
-      x2 <- kwb.graph::getConnectedLinks(kurasNetwork, version = 2,
+      x2 <- kwb.graph::getConnectedLinks(network, version = 2,
                                          resultSize = resultSize, queueSize = queueSize)
     )["elapsed"]
     
     runtime.C2[i] <- system.time(
-      x3 <- kwb.graph::getConnectedLinks(kurasNetwork, version = 3,
+      x3 <- kwb.graph::getConnectedLinks(network, version = 3,
                                          resultSize = resultSize, queueSize = queueSize)
     )["elapsed"]
   }
