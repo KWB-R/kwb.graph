@@ -1,17 +1,3 @@
-if (FALSE)
-{
-  windows <- TRUE
-  
-  #path <- "~/kwb/firstc"
-  #path <- "C:/Users/hsonne/Desktop/R_Development/RSupport/go_upstream/C_source"
-  path <- "C:/Users/hsonne/Desktop/tmp/_RBuild/kwb.graph/src-i386"
-  
-  #libfile <- file.path(path, ifelse(windows, "connected.dll", "connected.so"))
-  libfile <- file.path(path, "kwb.graph.dll")
-  
-  dyn.load(libfile)
-}
-
 # getConnectedLinks ------------------------------------------------------------
 getConnectedLinks <- structure(
 #' Get Connected Links
