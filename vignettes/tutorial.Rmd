@@ -16,6 +16,58 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Provide an example network
+
+```{r}
+network <- kwb.graph::exampleNetwork(n_links = 25L, index = 13L)
+```
+
+## Plot the network
+
+```{r}
+# Define a function to plot the network (requires the "igraph" package)
+plot_net <- function(network, ..., marked = NULL, seed = 1L) {
+  
+  if (! is.null(seed)) {
+    set.seed(seed)
+  }
+  
+  
+  if (is.null(marked)) {
+    edge.color <- "gray"
+  } else {
+    edge.color <- rep("lightgray", nrow(network))
+    edge.color[marked] <- "red"
+  }
+  
+  igraph::plot.igraph(
+    x = igraph::graph_from_data_frame(network), 
+    layout = igraph::layout.fruchterman.reingold, 
+    vertex.size = 5, 
+    vertex.label.cex = 0.8,
+    vertex.label.dist = 1.5,
+    edge.arrow.size = 0.5, 
+    edge.color = edge.color,
+    ...
+  )
+}
+
+# Plot the two networks
+plot_net(network)
+
+# For each link, find all links upstream
+us_links <- kwb.graph::getConnectedLinks(network)
+
+# Mark the upstream links for three different start links
+link_sets <- us_links[lengths(us_links) > 3L]
+
+plot_net(network, marked = link_sets[[1]])
+plot_net(network, marked = link_sets[[3]])
+plot_net(network, marked = link_sets[[10]])
+```
+
+## Performance test
+
 ```{r setup}
 # Get the full example network that is stored in the package
 network <- kwb.graph::exampleNetwork(n_links = -1L)
@@ -28,9 +80,10 @@ runtime.C2 <- vector()
 # Function to run code in "exp" and return elapsed time
 elapsed <- function(exp) system.time(exp)["elapsed"]
 
-# Shortcut to the main function. Arguments resultSize and queueSize are
-# required by the C-versions of getConnectedLinks(), TODO: set internally!
-run <- function(version = 1L) kwb.graph::getConnectedLinks(
+# Shortcut to the main function. Arguments "resultSize" and "queueSize" are
+# required by the C-versions of getConnectedLinks(), TODO: find proper values
+# within getConnectedLinks()!
+run <- function(version) kwb.graph::getConnectedLinks(
   network, 
   version = version, 
   resultSize = 2054851, 
@@ -44,7 +97,7 @@ n <- 3L
 # upstream" algorithm within getConnectedLinks()
 for (i in seq_len(n)) {
   cat("run", i, "/", n, "\n")
-  runtime.R[i]  <- elapsed(x1 <- run())
+  runtime.R[i]  <- elapsed(x1 <- run(version = 1L))
   runtime.C1[i] <- elapsed(x2 <- run(version = 2L))
   runtime.C2[i] <- elapsed(x3 <- run(version = 3L))
 }

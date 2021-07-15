@@ -25,6 +25,7 @@ Depends:
 Imports:
     kwb.utils
 Suggests: 
+    igraph,
     knitr,
     rmarkdown
 VignetteBuilder: 
