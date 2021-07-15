@@ -98,27 +98,6 @@ getConnectedLinks <- structure(
   boxplot(runtime ~ version, data = runtimeData)
 })
 
-# exampleNetwork ---------------------------------------------------------------
-
-#' Example network
-#' 
-#' Example data describing a network of connected links
-#' 
-#' @return data frame with 10040 observations of two variables. The variables
-#'   \code{us_node_id} (upstream node ID) and \code{ds_node_id} (downstream node
-#'   ID) define the connections between links. They are needed if the list of
-#'   connected links upstream of each node is to be calculated by means of
-#'   \code{\link{getConnectedLinks}}.
-#' 
-#' @export
-exampleNetwork <- function()
-{
-  utils::read.csv(
-    system.file("extdata/exampleNetwork.csv", package = "kwb.graph"), 
-    stringsAsFactors = FALSE
-  )
-}
-
 # getDirectLinks.R -------------------------------------------------------------
 
 #' Get Direct Links (R Implementation)
