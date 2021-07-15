@@ -195,9 +195,9 @@
   mean_runtime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">runtime.R</span>, <span class="va">runtime.C1</span>, <span class="va">runtime.C2</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span>
 <span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   version implementation mean_runtime</span>
-<span class="co">#&gt; 1       1    R-functions    2.8283333</span>
+<span class="co">#&gt; 1       1    R-functions    2.7400000</span>
 <span class="co">#&gt; 2       2 C-functions(1)    0.7193333</span>
-<span class="co">#&gt; 3       3 C-functions(2)    0.7123333</span>
+<span class="co">#&gt; 3       3 C-functions(2)    0.7140000</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mean_runtime</span> <span class="op">~</span> <span class="va">version</span>, data <span class="op">=</span> <span class="va">runtimeData</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/setup-1.png" width="700"></p>
