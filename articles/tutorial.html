@@ -92,7 +92,67 @@
 
     
     
+<div id="provide-an-example-network" class="section level2">
+<h2 class="hasAnchor">
+<a href="#provide-an-example-network" class="anchor"></a>Provide an example network</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">network</span> <span class="op">&lt;-</span> <span class="fu">kwb.graph</span><span class="fu">::</span><span class="fu"><a href="../reference/exampleNetwork.html">exampleNetwork</a></span><span class="op">(</span>n_links <span class="op">=</span> <span class="fl">25L</span>, index <span class="op">=</span> <span class="fl">13L</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="plot-the-network" class="section level2">
+<h2 class="hasAnchor">
+<a href="#plot-the-network" class="anchor"></a>Plot the network</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Define a function to plot the network (requires the "igraph" package)</span>
+<span class="va">plot_net</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">network</span>, <span class="va">...</span>, <span class="va">marked</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">seed</span> <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">{</span>
+  
+  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span> <span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="va">seed</span><span class="op">)</span>
+  <span class="op">}</span>
+  
+  
+  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span><span class="op">(</span><span class="va">marked</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">edge.color</span> <span class="op">&lt;-</span> <span class="st">"gray"</span>
+  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+    <span class="va">edge.color</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"lightgray"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">network</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">edge.color</span><span class="op">[</span><span class="va">marked</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"red"</span>
+  <span class="op">}</span>
+  
+  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/plot.igraph.html">plot.igraph</a></span><span class="op">(</span>
+    x <span class="op">=</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">network</span><span class="op">)</span>, 
+    layout <span class="op">=</span> <span class="fu">igraph</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/igraph/man/layout.deprecated.html">layout.fruchterman.reingold</a></span>, 
+    vertex.size <span class="op">=</span> <span class="fl">5</span>, 
+    vertex.label.cex <span class="op">=</span> <span class="fl">0.8</span>,
+    vertex.label.dist <span class="op">=</span> <span class="fl">1.5</span>,
+    edge.arrow.size <span class="op">=</span> <span class="fl">0.5</span>, 
+    edge.color <span class="op">=</span> <span class="va">edge.color</span>,
+    <span class="va">...</span>
+  <span class="op">)</span>
+<span class="op">}</span>
+
+<span class="co"># Plot the two networks</span>
+<span class="fu">plot_net</span><span class="op">(</span><span class="va">network</span><span class="op">)</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="co"># For each link, find all links upstream</span>
+<span class="va">us_links</span> <span class="op">&lt;-</span> <span class="fu">kwb.graph</span><span class="fu">::</span><span class="fu"><a href="../reference/getConnectedLinks.html">getConnectedLinks</a></span><span class="op">(</span><span class="va">network</span><span class="op">)</span>
+
+<span class="co"># Mark the upstream links for three different start links</span>
+<span class="va">link_sets</span> <span class="op">&lt;-</span> <span class="va">us_links</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html">lengths</a></span><span class="op">(</span><span class="va">us_links</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">3L</span><span class="op">]</span>
+
+<span class="fu">plot_net</span><span class="op">(</span><span class="va">network</span>, marked <span class="op">=</span> <span class="va">link_sets</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-3-2.png" width="700"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">plot_net</span><span class="op">(</span><span class="va">network</span>, marked <span class="op">=</span> <span class="va">link_sets</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-3-3.png" width="700"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">plot_net</span><span class="op">(</span><span class="va">network</span>, marked <span class="op">=</span> <span class="va">link_sets</span><span class="op">[[</span><span class="fl">10</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<p><img src="tutorial_files/figure-html/unnamed-chunk-3-4.png" width="700"></p>
+</div>
+<div id="performance-test" class="section level2">
+<h2 class="hasAnchor">
+<a href="#performance-test" class="anchor"></a>Performance test</h2>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Get the full example network that is stored in the package</span>
 <span class="va">network</span> <span class="op">&lt;-</span> <span class="fu">kwb.graph</span><span class="fu">::</span><span class="fu"><a href="../reference/exampleNetwork.html">exampleNetwork</a></span><span class="op">(</span>n_links <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">)</span>
 
@@ -104,9 +164,10 @@
 <span class="co"># Function to run code in "exp" and return elapsed time</span>
 <span class="va">elapsed</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">exp</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">exp</span><span class="op">)</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>
 
-<span class="co"># Shortcut to the main function. Arguments resultSize and queueSize are</span>
-<span class="co"># required by the C-versions of getConnectedLinks(), TODO: set internally!</span>
-<span class="va">run</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">version</span> <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span> <span class="fu">kwb.graph</span><span class="fu">::</span><span class="fu"><a href="../reference/getConnectedLinks.html">getConnectedLinks</a></span><span class="op">(</span>
+<span class="co"># Shortcut to the main function. Arguments "resultSize" and "queueSize" are</span>
+<span class="co"># required by the C-versions of getConnectedLinks(), TODO: find proper values</span>
+<span class="co"># within getConnectedLinks()!</span>
+<span class="va">run</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">version</span><span class="op">)</span> <span class="fu">kwb.graph</span><span class="fu">::</span><span class="fu"><a href="../reference/getConnectedLinks.html">getConnectedLinks</a></span><span class="op">(</span>
   <span class="va">network</span>, 
   version <span class="op">=</span> <span class="va">version</span>, 
   resultSize <span class="op">=</span> <span class="fl">2054851</span>, 
@@ -120,7 +181,7 @@
 <span class="co"># upstream" algorithm within getConnectedLinks()</span>
 <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"run"</span>, <span class="va">i</span>, <span class="st">"/"</span>, <span class="va">n</span>, <span class="st">"\n"</span><span class="op">)</span>
-  <span class="va">runtime.R</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>  <span class="op">&lt;-</span> <span class="fu">elapsed</span><span class="op">(</span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">runtime.R</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>  <span class="op">&lt;-</span> <span class="fu">elapsed</span><span class="op">(</span><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span>version <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span>
   <span class="va">runtime.C1</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">elapsed</span><span class="op">(</span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span>version <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span><span class="op">)</span>
   <span class="va">runtime.C2</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">elapsed</span><span class="op">(</span><span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu">run</span><span class="op">(</span>version <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span>
@@ -134,17 +195,20 @@
   mean_runtime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">runtime.R</span>, <span class="va">runtime.C1</span>, <span class="va">runtime.C2</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span>
 <span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   version implementation mean_runtime</span>
-<span class="co">#&gt; 1       1    R-functions    2.7833333</span>
-<span class="co">#&gt; 2       2 C-functions(1)    0.7566667</span>
+<span class="co">#&gt; 1       1    R-functions    2.8283333</span>
+<span class="co">#&gt; 2       2 C-functions(1)    0.7193333</span>
 <span class="co">#&gt; 3       3 C-functions(2)    0.7123333</span>
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/boxplot.html">boxplot</a></span><span class="op">(</span><span class="va">mean_runtime</span> <span class="op">~</span> <span class="va">version</span>, data <span class="op">=</span> <span class="va">runtimeData</span><span class="op">)</span></code></pre></div>
 <p><img src="tutorial_files/figure-html/setup-1.png" width="700"></p>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 
