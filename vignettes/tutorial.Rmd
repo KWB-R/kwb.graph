@@ -3,8 +3,10 @@ title: "Find Upstream Links in Network"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Find Upstream Links in Network}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r, include = FALSE}
@@ -14,48 +16,97 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+## Provide an example network
 
-  network <- kwb.graph::exampleNetwork()
-  head(network)  
+```{r}
+network <- kwb.graph::exampleNetwork(n_links = 25L, index = 13L)
+```
 
-  runtime.R <- vector()
-  runtime.C1 <- vector()  
-  runtime.C2 <- vector()  
+## Plot the network
+
+```{r}
+# Define a function to plot the network (requires the "igraph" package)
+plot_net <- function(network, ..., marked = NULL, seed = 1L) {
   
-  n <- 1
-  
-  resultSize <- 2054851
-  queueSize <- 100*1024
-  
-  for (i in 1:n) {
-    cat("run", i, "/", n, "\n")
-    
-    runtime.R[i] <- system.time(
-      x1 <- kwb.graph::getConnectedLinks(network)
-    )["elapsed"]
-
-    
-    runtime.C1[i] <- system.time(
-      x2 <- kwb.graph::getConnectedLinks(network, version = 2,
-                                         resultSize = resultSize, queueSize = queueSize)
-    )["elapsed"]
-
-    runtime.C2[i] <- system.time(
-      x3 <- kwb.graph::getConnectedLinks(network, version = 3,
-                                         resultSize = resultSize, queueSize = queueSize)
-    )["elapsed"]
+  if (! is.null(seed)) {
+    set.seed(seed)
   }
   
-  cat("mean runtime with R-functions:", mean(runtime.R), "\n")
-  cat("mean runtime with C-functions(1):", mean(runtime.C1), "\n")  
-  cat("mean runtime with C-functions(2):", mean(runtime.C2), "\n")  
   
-  runtimeData <- rbind(
-    data.frame(version=1, runtime=runtime.R),
-    data.frame(version=2, runtime=runtime.C1),
-    data.frame(version=3, runtime=runtime.C2)
+  if (is.null(marked)) {
+    edge.color <- "gray"
+  } else {
+    edge.color <- rep("lightgray", nrow(network))
+    edge.color[marked] <- "red"
+  }
+  
+  igraph::plot.igraph(
+    x = igraph::graph_from_data_frame(network), 
+    layout = igraph::layout.fruchterman.reingold, 
+    vertex.size = 5, 
+    vertex.label.cex = 0.8,
+    vertex.label.dist = 1.5,
+    edge.arrow.size = 0.5, 
+    edge.color = edge.color,
+    ...
   )
-  
-  boxplot(runtime ~ version, data = runtimeData)
+}
+
+# Plot the two networks
+plot_net(network)
+
+# For each link, find all links upstream
+us_links <- kwb.graph::getConnectedLinks(network)
+
+# Mark the upstream links for three different start links
+link_sets <- us_links[lengths(us_links) > 3L]
+
+plot_net(network, marked = link_sets[[1]])
+plot_net(network, marked = link_sets[[3]])
+plot_net(network, marked = link_sets[[10]])
+```
+
+## Performance test
+
+```{r setup}
+# Get the full example network that is stored in the package
+network <- kwb.graph::exampleNetwork(n_links = -1L)
+
+# For the comparison of run times, initialise vectors holding run times
+runtime.R <- vector()
+runtime.C1 <- vector()
+runtime.C2 <- vector()
+
+# Function to run code in "exp" and return elapsed time
+elapsed <- function(exp) system.time(exp)["elapsed"]
+
+# Shortcut to the main function. Arguments "resultSize" and "queueSize" are
+# required by the C-versions of getConnectedLinks(), TODO: find proper values
+# within getConnectedLinks()!
+run <- function(version) kwb.graph::getConnectedLinks(
+  network, 
+  version = version, 
+  resultSize = 2054851, 
+  queueSize = 100*1024
+)
+
+# Number of repetitions for run time comparison
+n <- 3L
+
+# Compare run times of three different implementations of the "collect links
+# upstream" algorithm within getConnectedLinks()
+for (i in seq_len(n)) {
+  cat("run", i, "/", n, "\n")
+  runtime.R[i]  <- elapsed(x1 <- run(version = 1L))
+  runtime.C1[i] <- elapsed(x2 <- run(version = 2L))
+  runtime.C2[i] <- elapsed(x3 <- run(version = 3L))
+}
+
+(runtimeData <- data.frame(
+  version = 1:3,
+  implementation = c("R-functions", "C-functions(1)", "C-functions(2)"),
+  mean_runtime = sapply(list(runtime.R, runtime.C1, runtime.C2), mean)
+))
+
+boxplot(mean_runtime ~ version, data = runtimeData)
 ```
