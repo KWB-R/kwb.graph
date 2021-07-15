@@ -1,27 +1,55 @@
 # getConnectedLinks ------------------------------------------------------------
-getConnectedLinks <- structure(
+
 #' Get Connected Links
 #'
 #' @param x data frame with each row representing a link of the network. Required
 #' columns: \emph{us_node_id}, \emph{ds_node_id} 
 #' @param upstream if TRUE (upstream), if FALSE (downstream), default: TRUE
-#' @param version   1: R-implementation, 2: C-implementation, (default: 1)
+#' @param version 1: R-implementation, 2: C-implementation, (default: 1)
 #' @param dbg default: FALSE
 #' @param ... additional arguments passed to  \code{\link{getConnectedLinks.C}}
 #'
 #' @return get connected links
 #' @export
 #' @useDynLib kwb.graph C_getDirectLinks C_getConnectedLinks
-  function # getConnectedLinks
-### getConnectedLinks
-(
-  x,
-  upstream = TRUE,
-  version = 1,
-  ### 1: R-implementation, 2: C-implementation
-  dbg = FALSE,
-  ...
-)
+#' @examples 
+#' network <- kwb.graph::exampleNetwork(n_links = -1L)
+#' 
+#' runtime.R <- vector()
+#' runtime.C1 <- vector()  
+#' runtime.C2 <- vector()  
+#' 
+#' n <- 1
+#' resultSize <- 2054851
+#' queueSize <- 100*1024
+#' 
+#' elapsed <- function(exp) system.time(exp)["elapsed"]
+#' 
+#' for (i in 1:n) {
+#'   cat("run", i, "/", n, "\n")
+#'   runtime.R[i] <- elapsed(x1 <- getConnectedLinks(
+#'     network
+#'   ))
+#'   runtime.C1[i] <- elapsed(x2 <- getConnectedLinks(
+#'     network, version = 2, resultSize = resultSize, queueSize = queueSize
+#'   ))
+#'   runtime.C2[i] <- elapsed(x3 <- getConnectedLinks(
+#'     network, version = 3, resultSize = resultSize, queueSize = queueSize
+#'   ))
+#' }
+#' 
+#' cat("mean runtime with R-functions:", mean(runtime.R), "\n")
+#' cat("mean runtime with C-functions(1):", mean(runtime.C1), "\n")  
+#' cat("mean runtime with C-functions(2):", mean(runtime.C2), "\n")  
+#' 
+#' runtimeData <- data.frame(
+#'   version = 1:3, 
+#'   runtime = c(runtime.R), runtime.C1, runtime.C2
+#' )
+#' 
+#' boxplot(runtime ~ version, data = runtimeData)
+#' 
+getConnectedLinks <- function(x, upstream = TRUE, version = 1, dbg = FALSE, ...)
 {
   n <- nrow(x)
   
@@ -41,48 +69,7 @@ getConnectedLinks <- structure(
   #  stop("version must be 1 (R-implementation) or 2 (C-implementation)!")
   #}
   connectedLinks
-}, ex = function() {
-  network <- kwb.graph::exampleNetwork()
-
-  runtime.R <- vector()
-  runtime.C1 <- vector()  
-  runtime.C2 <- vector()  
-  
-  n <- 1
-  
-  resultSize <- 2054851
-  queueSize <- 100*1024
-  
-  for (i in 1:n) {
-    cat("run", i, "/", n, "\n")
-    
-    runtime.R[i] <- system.time(
-      x1 <- getConnectedLinks(network)
-    )["elapsed"]
-    
-    runtime.C1[i] <- system.time(
-      x2 <- getConnectedLinks(network, version = 2, 
-                              resultSize = resultSize, queueSize = queueSize)
-    )["elapsed"]
-    
-    runtime.C2[i] <- system.time(
-      x3 <- getConnectedLinks(network, version = 3, 
-                              resultSize = resultSize, queueSize = queueSize)
-    )["elapsed"]
-  }
-  
-  cat("mean runtime with R-functions:", mean(runtime.R), "\n")
-  cat("mean runtime with C-functions(1):", mean(runtime.C1), "\n")  
-  cat("mean runtime with C-functions(2):", mean(runtime.C2), "\n")  
-  
-  runtimeData <- rbind(
-    data.frame(version=1, runtime=runtime.R),
-    data.frame(version=2, runtime=runtime.C1),
-    data.frame(version=3, runtime=runtime.C2)
-  )
-  
-  boxplot(runtime ~ version, data = runtimeData)
-})
+}
 
 # getDirectLinks.R -------------------------------------------------------------
 
