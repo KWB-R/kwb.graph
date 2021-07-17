@@ -7,8 +7,8 @@
 getConnectedLinks(x, upstream = TRUE, version = 1, dbg = FALSE, ...)
 }
 \arguments{
-\item{x}{data frame with each row representing a link of the network. Required
-columns: \emph{us_node_id}, \emph{ds_node_id}}
+\item{x}{data frame with each row representing a link of the network.
+Required columns: \emph{us_node_id}, \emph{ds_node_id}}
 
 \item{upstream}{if TRUE (upstream), if FALSE (downstream), default: TRUE}
 

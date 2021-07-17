@@ -13,7 +13,7 @@ columns: \emph{us_node_id}, \emph{ds_node_id}}
 \item{upstream}{if TRUE (upstream), if FALSE (downstream), default: TRUE}
 }
 \value{
-get direct links with R implementation
+list with as many elements as there are rows in \code{x}
 }
 \description{
 Get Direct Links (R Implementation)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/graphGetConnected.R
 \name{getConnectedLinks.C}
 \alias{getConnectedLinks.C}
-\title{#' Get Connected Links (C Implementation)}
+\title{Get Connected Links (C Implementation)}
 \usage{
 getConnectedLinks.C(
   directLinks,
@@ -24,8 +24,9 @@ getConnectedLinks.C(
 \item{dbg}{default: FALSE}
 }
 \value{
-get connected links with C implementation
+data.frame with columns \code{origin}, \code{linked} and attribute
+  \code{numberOfConnected}
 }
 \description{
-#' Get Connected Links (C Implementation)
+Get Connected Links (C Implementation)
 }
