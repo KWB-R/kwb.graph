@@ -124,7 +124,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get Connected Links</h1>
-    <small class="dont-index">Source: <a href='https://github.com/KWB-R/kwb.graph/blob/master/R/graphGetConnected.R'><code>R/graphGetConnected.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/KWB-R/kwb.graph/blob/master/R/get_connected_links.R'><code>R/get_connected_links.R</code></a></small>
     <div class="hidden name"><code>getConnectedLinks.Rd</code></div>
     </div>
 
@@ -156,7 +156,7 @@ Required columns: <em>us_node_id</em>, <em>ds_node_id</em></p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments passed to  <code><a href='getConnectedLinks.C.html'>getConnectedLinks.C</a></code></p></td>
+      <td><p>additional arguments passed to <code><a href='getConnectedLinks.C.html'>getConnectedLinks.C</a></code></p></td>
     </tr>
     </table>
 
@@ -191,17 +191,16 @@ Required columns: <em>us_node_id</em>, <em>ds_node_id</em></p></td>
 <span class='op'>}</span>
 </div><div class='output co'>#&gt; run 1 / 1 </div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='st'>"mean runtime with R-functions:"</span>, <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>runtime.R</span><span class='op'>)</span>, <span class='st'>"\n"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; mean runtime with R-functions: 2.852 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='st'>"mean runtime with C-functions(1):"</span>, <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>runtime.C1</span><span class='op'>)</span>, <span class='st'>"\n"</span><span class='op'>)</span>  
-</div><div class='output co'>#&gt; mean runtime with C-functions(1): 0.742 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='st'>"mean runtime with C-functions(2):"</span>, <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>runtime.C2</span><span class='op'>)</span>, <span class='st'>"\n"</span><span class='op'>)</span>  
-</div><div class='output co'>#&gt; mean runtime with C-functions(2): 0.728 </div><div class='input'>
+</div><div class='output co'>#&gt; mean runtime with R-functions: 3.009 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='st'>"mean runtime with C-functions(1):"</span>, <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>runtime.C1</span><span class='op'>)</span>, <span class='st'>"\n"</span><span class='op'>)</span>  
+</div><div class='output co'>#&gt; mean runtime with C-functions(1): 0.748 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='st'>"mean runtime with C-functions(2):"</span>, <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>runtime.C2</span><span class='op'>)</span>, <span class='st'>"\n"</span><span class='op'>)</span>  
+</div><div class='output co'>#&gt; mean runtime with C-functions(2): 0.8 </div><div class='input'>
 <span class='va'>runtimeData</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
   version <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, 
   runtime <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>runtime.R</span><span class='op'>)</span>, <span class='va'>runtime.C1</span>, <span class='va'>runtime.C2</span>
 <span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/graphics/boxplot.html'>boxplot</a></span><span class='op'>(</span><span class='va'>runtime</span> <span class='op'>~</span> <span class='va'>version</span>, data <span class='op'>=</span> <span class='va'>runtimeData</span><span class='op'>)</span>
-</div><div class='img'><img src='getConnectedLinks-1.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+</div><div class='img'><img src='getConnectedLinks-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
