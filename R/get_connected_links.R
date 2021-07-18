@@ -52,7 +52,7 @@ getConnectedLinks <- function(x, upstream = TRUE, version = 1, dbg = FALSE, ...)
 {
   if (version == 1) {
     return(getConnectedLinks.R(
-      directly.connected = getDirectLinks.R(x, upstream), 
+      directLinks = getDirectLinks.R(x, upstream), 
       dbg = dbg
     ))
   } 
@@ -136,17 +136,17 @@ getDirectLinks.C <- function(x, MAX_DIRECT_CONNECTIONS = 5, dbg = FALSE)
 
 #' Get Connected Links (R Implementation)
 #'
-#' @param directly.connected directly.connected
+#' @param directLinks direct links
 #' @param dbg default: FALSE
 #' @return get connected links with R implementation
 #' @export
 #' @importFrom kwb.utils catIf
-getConnectedLinks.R <- function(directly.connected, dbg = FALSE)
+getConnectedLinks.R <- function(directLinks, dbg = FALSE)
 {
   # Initialise result list
-  all.connected <- list()
+  result <- list()
   
-  n <- length(directly.connected)
+  n <- length(directLinks)
   
   blocksize <- max(1, n %/% 80)
   
@@ -156,46 +156,46 @@ getConnectedLinks.R <- function(directly.connected, dbg = FALSE)
     kwb.utils::catIf(dbg && i %% blocksize == 0, ".")
     
     # Initialise vector of indices of connected links
-    all.connected[[i]] <- integer(0)
+    result[[i]] <- integer(0L)
     
     # Initialise boolean vector holding TRUE at indices representing the links
     # that are connected directly or indirectly to the current link i
-    is.connected <- logical(length = n)
+    is_linked <- logical(n)
     
     # Start queue of indices of connected links with indices of directly
     # connected links
-    queue <- directly.connected[[i]] 
+    queue <- directLinks[[i]] 
     
-    while (length(queue) > 0) {
+    while (length(queue)) {
       
       # Get and remove next index from queue
-      link.index <- queue[1L]
+      index <- queue[ 1L]
       queue <- queue[-1L]
       
-      is.connected[link.index] <- TRUE
+      is_linked[index] <- TRUE
       
-      if (link.index < i) {
+      # If link "index" was already considered (before the current link "i") 
+      if (index < i) {
         
-        # If link with index link.index was already considered (before the
-        # current link i) save full information on links that are connected to
-        # the link with index link.index in the logical vector is.connected.
-        is.connected[all.connected[[link.index]]] <- TRUE
+        # Save information on links that are connected to link "index" in
+        # logical vector "is_linked".
+        is_linked[result[[index]]] <- TRUE
         
       } else {
         
         # Add indices of directly connected links to the queue
-        queue <- c(queue, directly.connected[[link.index]])
+        queue <- c(queue, directLinks[[index]])
       }
       
     } # End of while
     
     # Save indices of connected links
-    all.connected[[i]] <- which(is.connected)
+    result[[i]] <- which(is_linked)
   }
   
   kwb.utils::catIf(dbg, "<\n")
   
-  all.connected
+  result
 }
 
 # getConnectedLinks.C ----------------------------------------------------------
