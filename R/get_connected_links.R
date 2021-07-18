@@ -216,7 +216,7 @@ getConnectedLinks.C <- function(
   dbg = FALSE
 )
 {
-  n <- length(directLinks)
+  n_direct <- length(directLinks)
   
   # Number of directly connected links for each link
   n_links <- lengths(directLinks)
@@ -224,33 +224,32 @@ getConnectedLinks.C <- function(
   # Matrix with each row representing a link. Column i contains the ID of the 
   # i-th directly connected link. If there is no such link the matrix element is 
   # -1.
-  i_direct <- matrix(-1L, nrow = n, ncol = max(n_links))
+  i_direct <- matrix(-1L, nrow = n_direct, ncol = max(n_links))
   
-  links.matrix <- t(sapply(seq_len(n), FUN = function(i) {
-    n.links <- n_links[[i]]
-    onerow <- i_direct[i, ]
-    if (n.links > 0L) {
-      onerow[seq_len(n.links)] <- as.integer(directLinks[[i]])
+  link_matrix <- t(sapply(seq_len(n_direct), function(i) {
+    y <- i_direct[i, ]
+    if (n <- n_links[[i]]) {
+      y[seq_len(n)] <- as.integer(directLinks[[i]])
     }
-    onerow
-  }))    
+    y
+  }))
   
   kwb.utils::catIf(dbg, "\ngetConnectedLinks.C:\n", sprintf(
     "Calling C_getConnectedLinks(%d, queueSize = %d, dbg = %d, version = %d)\n", 
-    n, queueSize, dbg, version
+    n_direct, queueSize, dbg, version
   ))
   
   fetch <- kwb.utils::createAccessor(.C(
     "C_getConnectedLinks", 
-    in_n = as.integer(n), 
-    in_numberOfDirectLinks = as.integer(n_links),
+    in_n = n_direct, 
+    in_numberOfDirectLinks = n_links,
     # In C, a one-dimensional array is used, created by putting the columns one
     # after another
-    in_indicesOfDirectLinks = c(links.matrix),
-    out_numberOfTotalLinks = as.integer(rep(0, n)),
+    in_indicesOfDirectLinks = c(link_matrix),
+    out_numberOfTotalLinks = integer(n_direct),
     inout_result_size = as.integer(resultSize),
-    out_result_origin = as.integer(rep(0, resultSize)),
-    out_result_linked = as.integer(rep(0, resultSize)),
+    out_result_origin = integer(resultSize),
+    out_result_linked = integer(resultSize),
     in_queueSize = as.integer(queueSize),
     in_dbg = as.integer(dbg),
     in_version = as.integer(version)
