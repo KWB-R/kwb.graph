@@ -50,32 +50,22 @@
 #' boxplot(runtime ~ version, data = runtimeData)
 getConnectedLinks <- function(x, upstream = TRUE, version = 1, dbg = FALSE, ...)
 {
-  n <- nrow(x)
-  
-  # get the row indices of all upstream (or downstream) connected links
   if (version == 1) {
-    
-    direct <- getDirectLinks.R(x = x, upstream = upstream)
-    connected <- getConnectedLinks.R(direct, dbg = dbg)
-    
-  } else {
-    
-    direct <- kwb.utils::catAndRun(
-      dbg = dbg, 
-      "Getting direct links",
-      getDirectLinks.C(x = x)
-    )
-    
-    connected <- kwb.utils::catAndRun(
-      dbg = dbg, 
-      "Getting connected links",
-      getConnectedLinks.C(direct, version = version - 1, dbg = dbg, ...)
-    )
-  }
-  #else {
-  #  stop("version must be 1 (R-implementation) or 2 (C-implementation)!")
-  #}
-  connected
+    return(getConnectedLinks.R(
+      directly.connected = getDirectLinks.R(x, upstream), 
+      dbg = dbg
+    ))
+  } 
+
+  # Helper function to print a debug message and run a piece of code
+  run <- function(msg, expr) kwb.utils::catAndRun(msg, expr, dbg = dbg)
+  
+  run("Getting connected links", getConnectedLinks.C(
+    directLinks = run("Getting direct links", getDirectLinks.C(x)),
+    version = version - 1, 
+    dbg = dbg, 
+    ...
+  ))
 }
 
 # getDirectLinks.R -------------------------------------------------------------
