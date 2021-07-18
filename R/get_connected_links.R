@@ -99,38 +99,35 @@ getDirectLinks.R <- function(x, upstream = TRUE)
 #' @param MAX_DIRECT_CONNECTIONS default: 5
 #' @param dbg default: FALSE
 #' @return get direct links with C implementation
-#' @importFrom kwb.utils selectColumns selectElements
+#' @importFrom kwb.utils createAccessor
 #' @export
 getDirectLinks.C <- function(x, MAX_DIRECT_CONNECTIONS = 5, dbg = FALSE)
 {
-  getcol <- kwb.utils::selectColumns
-  getele <- kwb.utils::selectElements
+  n <- nrow(x)
+
+  # Function to access columns of x
+  get <- kwb.utils::createAccessor(x)
   
-  n <- nrow(x)  
-  
-  n_found <- rep(as.integer(0), n)
-  i_found <- as.integer(rep(0, MAX_DIRECT_CONNECTIONS * n))
-  
-  result <- .C(
+  # Function to access elements of list returned by "C_getDirectLinks"
+  get <- kwb.utils::createAccessor(.C(
     "C_getDirectLinks", 
-    length = as.integer(n), 
-    upstreamNodes = getcol(x, "us_node_id"),
-    downstreamNodes = getcol(x, "ds_node_id"),
-    numberOfFound = n_found,
-    indicesOfFound = i_found,
+    length = n, 
+    upstreamNodes = get("us_node_id"),
+    downstreamNodes = get("ds_node_id"),
+    numberOfFound = integer(n),
+    indicesOfFound = integer(MAX_DIRECT_CONNECTIONS * n),
     maxNumber = as.integer(MAX_DIRECT_CONNECTIONS),
     dbg = as.integer(dbg)
     #,    PACKAGE = "kwb.graph"    
-  )
+  ))
   
-  n_found <- getele(result, "numberOfFound")
-  i_found <- getele(result, "indicesOfFound") 
-  
+  n_found <- get("numberOfFound")
+
   if (max(n_found) > MAX_DIRECT_CONNECTIONS) {
     stop("It seems that you need to increase MAX_DIRECT_CONNECTIONS!")
   }
   
-  M <- matrix(i_found, ncol = MAX_DIRECT_CONNECTIONS)
+  M <- matrix(get("indicesOfFound"), ncol = MAX_DIRECT_CONNECTIONS)
   
   lapply(seq_len(n), function(i) M[i, seq_len(n_found[i])])
 }
